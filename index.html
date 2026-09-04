@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório Gerencial | PAD Saúde+</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main class="dashboard">
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark">+</div>
+    <div><strong>PAD <span>SAÚDE</span></strong><small>CUIDANDO SEMPRE DE VOCÊ</small></div>
+  </div>
+  <div class="title"><h1>RELATÓRIO GERENCIAL</h1><p>ATENDIMENTOS E INDICADORES</p></div>
+  <div class="period"><div class="calendar">▣</div><div><small>PERÍODO ANALISADO</small><strong id="periodLabel">Nenhum dado</strong></div></div>
+</header>
+
+<section class="import-box">
+  <div><strong>Importar dados</strong><span>CSV ou Excel (.xlsx/.xls). Usa data_fim, entrada do médico, finalização e t4_duração_consulta da planilha.</span></div>
+  <label class="file-btn">Selecionar arquivo<input type="file" id="fileInput" accept=".csv,.xlsx,.xls"></label>
+  <span id="fileStatus" class="file-status">Nenhum arquivo carregado</span>
+</section>
+
+<section class="filters">
+  <label>Data inicial<input type="date" id="startDate"></label>
+  <label>Data final<input type="date" id="endDate"></label>
+  <label>Status<select id="statusFilter"><option value="Todos">Todos</option></select></label>
+  <label>Especialidade<select id="specialtyFilter"><option value="Todas">Todas</option></select></label>
+  <button id="applyBtn">Aplicar filtros</button>
+  <button id="clearBtn" class="secondary">Limpar</button><button id="pdfBtn" class="pdf-btn">Salvar em PDF</button>
+</section>
+
+<div id="emptyState" class="empty-state">
+  <strong>Importe um arquivo para gerar o relatório</strong>
+  <span>O sistema não usa números fixos. Todos os indicadores e gráficos serão calculados com os dados da sua planilha.</span>
+</div>
+
+<section id="report" class="hidden">
+<section class="kpis">
+  <article class="kpi"><div class="icon">👥</div><div><strong id="total">0</strong><span>Total de Atendimentos</span><em id="totalTrend">—</em><small>registros no período filtrado</small></div></article>
+  <article class="kpi"><div class="icon">◷</div><div><strong id="avg">00:00</strong><span>Tempo Médio de Atendimento</span><em id="avgInfo">—</em><small>calculado apenas com início e fim válidos</small></div></article>
+  <article class="kpi"><div class="icon">●</div><div><strong id="patients">0</strong><span>Pacientes Únicos</span><em id="patientInfo">—</em><small>nomes distintos no período</small></div></article>
+  <article class="kpi"><div class="icon">▤</div><div><strong id="completion">0%</strong><span>Taxa de Conclusão</span><em id="statusInfo">—</em><small>baseada no status dos registros</small></div></article>
+</section>
+
+<section class="grid main-grid">
+<article class="card large">
+  <div class="card-head"><h2>Atendimentos por Dia</h2><select id="chartMode"><option value="daily">Diário</option><option value="weekly">Semanal</option></select></div>
+  <div class="chart-legend"><span><i class="legend-realizado"></i>Realizado</span><span><i class="legend-agendado"></i>Agendado</span></div><div class="bar-chart" id="barChart"><div class="chart-empty">Sem dados</div></div>
+  <div class="axis" id="barAxis"></div>
+</article>
+
+<article class="card">
+  <div class="card-head"><h2>Atendimentos por Especialidade</h2></div>
+  <div class="donut-wrap"><div class="donut" id="specialtyDonut"><div><strong id="donutTotal">0</strong><span>Atendimentos</span></div></div><ul class="legend" id="specialtyLegend"></ul></div>
+</article>
+
+<article class="card">
+  <div class="card-head"><h2>Status dos Atendimentos</h2></div>
+  <div class="status-wrap"><div class="status-donut" id="statusDonut"><div><strong id="statusTotal">0</strong><span>Atendimentos</span></div></div><ul class="legend status" id="statusLegend"></ul></div>
+</article>
+
+<article class="card table-card">
+  <div class="card-head"><h2 id="tableTitle">Últimos Atendimentos</h2><button class="link-btn" id="showAll">Ver todos</button></div>
+  <div class="table-scroll"><table><thead><tr><th>Data</th><th>Horário Início</th><th>Horário Fim</th><th>Paciente</th><th>Especialidade</th><th>Tempo de Atendimento</th></tr></thead><tbody id="tableBody"></tbody></table></div>
+</article>
+
+<article class="card time-card">
+  <div class="card-head"><h2>Tempo de Atendimento</h2><select id="timeMode"><option value="daily">Diário</option><option value="weekly">Semanal</option></select></div>
+  <div class="line-chart" id="lineChart"><div class="chart-empty">Sem dados de horários</div></div>
+</article>
+</section>
+</section>
+
+<footer><strong>PAD SAÚDE+</strong><span>Mais saúde para uma vida melhor.</span><span id="footerInfo">Relatório gerencial</span></footer>
+</main>
+<script src="script.js"></script>
+</body>
+</html>
